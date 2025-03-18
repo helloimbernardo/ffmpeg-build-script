@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# HOMEPAGE: https://github.com/markus-perl/ffmpeg-build-script
-# LICENSE: https://github.com/markus-perl/ffmpeg-build-script/blob/master/LICENSE
+# HOMEPAGE: https://github.com/helloimbernardo/ffmpeg-build-script
+# LICENSE: https://github.com/helloimbernardo/ffmpeg-build-script/blob/master/LICENSE.md
 
 PROGNAME=$(basename "$0")
 FFMPEG_VERSION=7.1
@@ -9,7 +9,7 @@ SCRIPT_VERSION=1.54
 CWD=$(pwd)
 PACKAGES="$CWD/packages"
 WORKSPACE="$CWD/workspace"
-CFLAGS="-I$WORKSPACE/include -Wno-int-conversion"
+CFLAGS="-I$WORKSPACE/include -Wno-int-conversion --arch=x86_64"
 LDFLAGS="-L$WORKSPACE/lib"
 LDEXEFLAGS=""
 EXTRALIBS="-ldl -lpthread -lm -lz"
@@ -392,6 +392,7 @@ fi
 
 if build "zlib" "1.3.1"; then
   download "https://github.com/madler/zlib/releases/download/v$CURRENT_PACKAGE_VERSION/zlib-$CURRENT_PACKAGE_VERSION.tar.gz"
+  export CFLAGS="-fPIC"
   execute ./configure --static --prefix="${WORKSPACE}"
   execute make -j $MJOBS
   execute make install
@@ -967,7 +968,7 @@ if $NONFREE_AND_GPL; then
   fi
   CONFIGURE_OPTIONS+=("--enable-libsrt")
 
-  if build "zvbi" "0.2.42"; then
+  if build "zvbi" "0.2.43"; then
     download "https://github.com/zapping-vbi/zvbi/archive/refs/tags/v$CURRENT_PACKAGE_VERSION.tar.gz" "zvbi-$CURRENT_PACKAGE_VERSION.tar.gz"
     execute ./autogen.sh --prefix="${WORKSPACE}"
     execute ./configure CFLAGS="-I${WORKSPACE}/include/libpng16 ${CFLAGS}" --prefix="${WORKSPACE}" --enable-static --disable-shared
@@ -1048,6 +1049,18 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
   CONFIGURE_OPTIONS+=("--enable-amf")
 fi
 
+# if build "libvmaf" "3.0.0"; then
+#   download "https://github.com/Netflix/vmaf/archive/v$CURRENT_PACKAGE_VERSION.tar.gz" "vmaf-$CURRENT_PACKAGE_VERSION.tar.gz"
+#   mkdir -p libvmaf/build
+#   cd libvmaf/build
+#   execute meson setup -Denable_tests=false -Denable_docs=false --buildtype=release --default-library=static .. --prefix "$WORKSPACE" --bindir="$WORKSPACE/bin" --libdir="$WORKSPACE/lib"
+#   execute ninja
+#   execute ninja install
+#   build_done "libvmaf" $CURRENT_PACKAGE_VERSION
+# fi
+# CONFIGURE_OPTIONS+=("--enable-libvmaf")
+# CONFIGURE_OPTIONS+=("--ld="g++"") # required due to an issue in libvmaf
+
 ##
 ## FFmpeg
 ##
@@ -1066,6 +1079,11 @@ fi
 build "ffmpeg" "$FFMPEG_VERSION"
 download "https://github.com/FFmpeg/FFmpeg/archive/refs/heads/release/$FFMPEG_VERSION.tar.gz" "FFmpeg-release-$FFMPEG_VERSION.tar.gz"
 # shellcheck disable=SC2086
+
+PKG_CONFIG_PATH="$WORKSPACE/lib64/pkgconfig:$WORKSPACE/lib/pkgconfig:$PKG_CONFIG_PATH"
+CFLAGS="-I$WORKSPACE/include/freetype2 $CFLAGS"
+LDFLAGS="-L$WORKSPACE/lib $LDFLAGS"
+
 execute ./configure "${CONFIGURE_OPTIONS[@]}" \
   --disable-debug \
   --disable-shared \
@@ -1076,8 +1094,8 @@ execute ./configure "${CONFIGURE_OPTIONS[@]}" \
   --extra-ldexeflags="${LDEXEFLAGS}" \
   --extra-ldflags="${LDFLAGS}" \
   --extra-libs="${EXTRALIBS}" \
-  --pkgconfigdir="$WORKSPACE/lib/pkgconfig" \
-  --pkg-config-flags="--static" \
+  --pkgconfigdir="${PKG_CONFIG_PATH}" \
+  --pkg-config-flags="--static --define-variable=prefix=${WORKSPACE}" \
   --prefix="${WORKSPACE}" \
   --extra-version="${EXTRA_VERSION}"
 

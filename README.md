@@ -1,17 +1,10 @@
 [![build test](https://github.com/markus-perl/ffmpeg-build-script/workflows/build%20test/badge.svg?branch=master)](https://github.com/markus-perl/ffmpeg-build-script/actions)
 
-![FFmpeg build script](https://raw.github.com/markus-perl/ffmpeg-build-script/master/ffmpeg-build-script.png)
+# FFmpeg Build Script
+The FFmpeg build script provides an easy way to build a **static** FFmpeg on **macOS** and **Linux** with optional **non-free and GPL codecs** (`--enable-gpl-and-non-free`, see https://ffmpeg.org/legal.html) included.
 
-### If you like the script, please "★" this project!
+This is a fork of the original [FFmpeg Build Script by markus-perl](https://github.com/markus-perl/ffmpeg-build-script), mostly to adapt it to my own needs and fix some of the issues I ran into. The original script might be more addequate for you.
 
-build-ffmpeg
-==========
-
-The FFmpeg build script provides an easy way to build a **static** FFmpeg on **macOS** and **Linux** with optional **non-free and GPL codecs** (--enable-gpl-and-non-free, see https://ffmpeg.org/legal.html) included.
-
-[![How-To build FFmpeg on MacOS](https://img.youtube.com/vi/Z9p3mM757cM/0.jpg)](https://www.youtube.com/watch?v=Z9p3mM757cM "How-To build FFmpeg on OSX")
-
-*Youtube: How-To build and install FFmpeg on macOS*
 
 ## Disclaimer And Data Privacy Notice
 
@@ -32,6 +25,7 @@ other than Debian and macOS, because I don't have the resources or time to maint
 
 * Debian >= Buster, Ubuntu => Focal Fossa; other distributions might work too
 * Rocky Linux 8
+* Fedora Linux (tested on Fedora 41)
 
 ```bash
 # Debian and Ubuntu
@@ -50,10 +44,10 @@ Open your command line and run (curl needs to be installed):
 
 ```bash
 # Without GPL and non-free codes, see https://ffmpeg.org/legal.html 
-$ bash <(curl -s "https://raw.githubusercontent.com/markus-perl/ffmpeg-build-script/master/web-install.sh?v1")
+$ bash <(curl -s "https://raw.githubusercontent.com/helloimbernardo/ffmpeg-build-script/main/web-install.sh?v1")
 
 # With GPL and non-free codes, see https://ffmpeg.org/legal.html 
-$ bash <(curl -s "https://raw.githubusercontent.com/markus-perl/ffmpeg-build-script/master/web-install-gpl-and-non-free.sh?v1")
+$ bash <(curl -s "https://raw.githubusercontent.com/helloimbernardo/ffmpeg-build-script/main/web-install-gpl-and-non-free.sh?v1")
 ```
 
 This command downloads the build script and automatically starts the build process.
@@ -61,7 +55,7 @@ This command downloads the build script and automatically starts the build proce
 ### Common install and build (macOS, Linux)
 
 ```bash
-$ git clone https://github.com/markus-perl/ffmpeg-build-script.git
+$ git clone https://github.com/helloimbernardo/ffmpeg-build-script.git
 $ cd ffmpeg-build-script
 # Without GPL and non-free codecs
 $ ./build-ffmpeg --build
@@ -314,7 +308,7 @@ $ sudo docker run --gpus all ffmpeg-cuda -hwaccel cuvid -c:v h264_cuvid -i https
 Contact
 -------
 
-* Github: [http://www.github.com/markus-perl/](https://github.com/markus-perl/ffmpeg-build-script)
+* Github: [http://www.github.com/helloimbernardo/](https://github.com/helloimbernardo/ffmpeg-build-script)
 
 Tested on
 ---------
@@ -322,6 +316,7 @@ Tested on
 * MacOS 15.1
 * Debian 12
 * Ubuntu 22.04
+* Fedora 41
 
 ## Continuous Integration
 
@@ -1486,13 +1481,3 @@ Install these binaries to your /usr/local/bin folder? Existing binaries will be 
 Password:
 Done. FFmpeg is now installed to your system.
 ```
-
-Other Projects Of Mine
-------------
-
-- [Pushover CLI Client](https://github.com/markus-perl/pushover-cli)
-- [Gender API](https://gender-api.com): [Genderize A Name](https://gender-api.com)
-- [Gender API Client PHP](https://github.com/markus-perl/gender-api-client)
-- [Gender API Client NPM](https://github.com/markus-perl/gender-api-client-npm)
-- [Genderize Names](https://www.youtube.com/watch?v=2SLIAguaygo)
-- [Genderize API](https://gender-api.io)
